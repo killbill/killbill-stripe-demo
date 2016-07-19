@@ -33,7 +33,7 @@ To run the app:
 PUBLISHABLE_KEY=<YOUR_PUBLISHABLE_STRIPE_KEY> ruby app.rb
 ```
 
-then go to http://localhost:4567/ where you should see the Stripe checkout button.
+then go to [http://localhost:4567/](http://localhost:4567/) where you should see the Stripe checkout button.
 
 Enter dummy data (4111111111111111 as the credit card number, any three digit CVC and any expiry date in the future work) and complete the checkout process.
 
