@@ -44,3 +44,7 @@ This will:
 * Add a default payment method on this account associated with this token (a customer object is also created in Stripe, so the token can be re-used)
 * Create a new subscription for the sports car monthly plan (with a $10 30-days trial)
 * Charge the token for $10
+
+![Shopping cart](./screen1.png)
+
+![Checkout](./screen2.png)
