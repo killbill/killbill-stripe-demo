@@ -78,7 +78,7 @@ post '/charge' do
   @invoice = account.invoices(true, options).first
 
   # And the Stripe authorization
-  transaction = @invoice.payments(true, 'NONE', options).first.transactions.first
+  transaction = @invoice.payments(true, false, 'NONE', options).first.transactions.first
   @authorization = (transaction.properties.find { |p| p.key == 'authorization' }).value
 
   erb :charge
