@@ -48,7 +48,7 @@ def create_subscription(account, user, reason, comment, options)
   subscription.price_overrides = []
 
   # For the demo to be interesting, override the trial price to be non-zero so we trigger a charge in Stripe
-  override_trial = KillBillClient::Model::PhasePriceOverrideAttributes.new
+  override_trial = KillBillClient::Model::PhasePriceAttributes.new
   override_trial.phase_type = 'TRIAL'
   override_trial.fixed_price = 10.0
   subscription.price_overrides << override_trial
