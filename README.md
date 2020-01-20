@@ -1,7 +1,7 @@
 Kill Bill Stripe demo
 =====================
 
-Inspired from the official [Using Checkout and Sinatra](https://stripe.com/docs/checkout/sinatra) guide, this sample app shows you how to integrate Stripe tokenization feature with [Kill Bill subscriptions APIs](http://docs.killbill.io/0.16/userguide_subscription.html).
+Inspired from the official [Using Checkout and Sinatra](https://stripe.com/docs/checkout/sinatra) guide, this sample app shows you how to integrate Stripe tokenization feature with [Kill Bill subscriptions APIs](https://docs.killbill.io/latest/userguide_subscription.html).
 
 Prerequisites
 -------------
@@ -24,8 +24,9 @@ bundle install
 
 This also assumes:
 
-* Kill Bill is [already setup](http://docs.killbill.io/0.20/getting_started.html)
+* Kill Bill is [already setup](https://docs.killbill.io/latest/getting_started.html)
 * The default tenant (bob/lazar) has been created
+* The default tenant has a `Sports` product, with a trial phase
 * The [Stripe plugin](https://github.com/killbill/killbill-stripe-plugin) is installed and configured
 
 Run
@@ -45,7 +46,7 @@ KB_URL='http://192.168.99.100:8080' PUBLISHABLE_KEY=<YOUR_PUBLISHABLE_STRIPE_KEY
 
 Then go to [http://localhost:4567/](http://localhost:4567/) where you should see the Stripe checkout button.
 
-Enter dummy data (4111111111111111 as the credit card number, any three digit CVC and any expiry date in the future work) and complete the checkout process.
+Enter dummy data (4242 4242 4242 4242 as the credit card number, any three digit CVC and any expiry date in the future work) and complete the checkout process.
 
 This will:
 
