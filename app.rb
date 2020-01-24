@@ -9,6 +9,7 @@ set :publishable_key, ENV['PUBLISHABLE_KEY']
 #
 
 KillBillClient.url = settings.kb_url
+KillBillClient.disable_ssl_verification = true
 
 # Multi-tenancy and RBAC credentials
 options = {
