@@ -4,16 +4,18 @@ require 'killbill_client'
 set :kb_url, ENV['KB_URL'] || 'http://127.0.0.1:8080'
 set :publishable_key, ENV['PUBLISHABLE_KEY']
 
+set :admin_password, ENV['ADMIN_PWD'] || 'password'
 #
 # Kill Bill configuration and helpers
 #
 
 KillBillClient.url = settings.kb_url
+KillBillClient.disable_ssl_verification = true
 
 # Multi-tenancy and RBAC credentials
 options = {
     :username => 'admin',
-    :password => 'password',
+    :password => :admin_password,
     :api_key => 'bob',
     :api_secret => 'lazar'
 }
