@@ -31,15 +31,20 @@ def create_kb_account(user, reason, comment, options)
   account.create(user, reason, comment, options)
 end
 
-def create_kb_payment_method(account, session_id, user, reason, comment, options)
+def create_kb_payment_method(account, session_id, token, user, reason, comment, options)
   pm = KillBillClient::Model::PaymentMethod.new
   pm.account_id = account.account_id
   pm.plugin_name = 'killbill-stripe'
 
-  prop_session_id = KillBillClient::Model::PluginPropertyAttributes.new
-  prop_session_id.key = 'sessionId'
-  prop_session_id.value = session_id
-  options[:pluginProperty] = [prop_session_id]
+  prop = KillBillClient::Model::PluginPropertyAttributes.new
+  if token.nil?
+    prop.key = 'sessionId'
+    prop.value = session_id
+  else
+    prop.key = 'token'
+    prop.value = token
+  end
+  options[:pluginProperty] = [prop]
 
   pm.create(true, user, reason, comment, options)
 end
@@ -69,6 +74,25 @@ def create_session(account, options)
   JSON.parse(response.body)['formFields'].find {|x| x['key'] == 'id'}['value']
 end
 
+def charge(account_id, session_id, token, user, reason, comment, options)
+  account = KillBillClient::Model::Account.find_by_id(account_id, true, true, options)
+
+  # Add a payment method associated with the Stripe token
+  create_kb_payment_method(account, session_id, token, user, reason, comment, options)
+
+  # Add a subscription
+  create_subscription(account, user, reason, comment, options)
+
+  # Retrieve the invoice
+  invoice = account.invoices(options).first
+
+  # And the Stripe authorization
+  transaction = invoice.payments(true, false, 'NONE', options).first.transactions.first
+  authorization = (transaction.properties.find { |p| p.key == 'id' }).value
+
+  [invoice, authorization]
+end
+
 #
 # Sinatra handlers
 #
@@ -87,21 +111,17 @@ post '/checkout' do
   erb :checkout
 end
 
+post '/elements' do
+  # Create an account
+  account = create_kb_account(user, reason, comment, options)
+
+  @invoice, @authorization = charge(account.account_id, nil, params[:stripeToken], user, reason, comment, options)
+
+  erb :charge
+end
+
 get '/charge' do
-  account = KillBillClient::Model::Account.find_by_id(params[:kbAccountId], true, true, options)
-
-  # Add a payment method associated with the Stripe token
-  create_kb_payment_method(account, params[:sessionId], user, reason, comment, options)
-
-  # Add a subscription
-  create_subscription(account, user, reason, comment, options)
-
-  # Retrieve the invoice
-  @invoice = account.invoices(options).first
-
-  # And the Stripe authorization
-  transaction = @invoice.payments(true, false, 'NONE', options).first.transactions.first
-  @authorization = (transaction.properties.find { |p| p.key == 'id' }).value
+  @invoice, @authorization = charge(params[:kbAccountId], params[:sessionId], nil, user, reason, comment, options)
 
   erb :charge
 end
@@ -126,7 +146,51 @@ __END__
       </label>
     </article>
   </form>
-  <button type="submit" form="checkout" value="Submit">Buy</button>
+  <button type="submit" form="checkout" value="Submit">Buy via Stripe Checkout</button>
+  <hr/>
+  <script src="https://js.stripe.com/v3/"></script>
+  <form action="/elements" method="post" id="payment-form">
+    <div class="form-row">
+      <label for="card-element">Credit or debit card</label>
+      <div id="card-element"></div>
+      <div id="card-errors" role="alert"></div>
+    </div>
+    <button>Buy via Stripe Elements</button>
+  </form>
+  <script>
+    var stripe = Stripe('<%= settings.publishable_key %>');
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
+
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      stripe.createToken(card).then(function(result) {
+        if (result.error) {
+          // Inform the customer that there was an error.
+          var errorElement = document.getElementById('card-errors');
+          errorElement.textContent = result.error.message;
+        } else {
+          // Send the token to your server.
+          stripeTokenHandler(result.token);
+        }
+      });
+    });
+
+    function stripeTokenHandler(token) {
+      // Insert the token ID into the form so it gets submitted to the server
+      var form = document.getElementById('payment-form');
+      var hiddenInput = document.createElement('input');
+      hiddenInput.setAttribute('type', 'hidden');
+      hiddenInput.setAttribute('name', 'stripeToken');
+      hiddenInput.setAttribute('value', token.id);
+      form.appendChild(hiddenInput);
+      // Submit the form
+      form.submit();
+    }
+  </script>
 
 @@checkout
   <script src="https://js.stripe.com/v3/"></script>
