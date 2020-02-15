@@ -44,9 +44,9 @@ or if you are using Docker:
 KB_URL='http://192.168.99.100:8080' PUBLISHABLE_KEY=<YOUR_PUBLISHABLE_STRIPE_KEY> ruby app.rb
 ```
 
-Then go to [http://localhost:4567/](http://localhost:4567/) where you should see the Stripe checkout button.
+Then go to [http://localhost:4567/](http://localhost:4567/) where you should see both the Stripe Checkout button and the Stripe Elements button highlighting two integration methods.
 
-Enter dummy data (4242 4242 4242 4242 as the credit card number, any three digit CVC and any expiry date in the future work) and complete the checkout process.
+Enter dummy data (4242 4242 4242 4242 as the credit card number, any three digit CVC and any expiry date in the future work) and complete one of the two checkout processes.
 
 This will:
 
