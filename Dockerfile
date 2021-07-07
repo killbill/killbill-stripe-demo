@@ -1,1 +1,0 @@
-FROM jruby:9
