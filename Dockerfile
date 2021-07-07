@@ -1,1 +1,1 @@
-WORKDIR /stripe-demo
+
