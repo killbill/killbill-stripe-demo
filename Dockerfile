@@ -1,1 +1,1 @@
-FROM jruby:9
+WORKDIR /stripe-demo
