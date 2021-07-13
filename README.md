@@ -3,15 +3,27 @@ Kill Bill Stripe demo
 
 Inspired from the official [Using Checkout and Sinatra](https://stripe.com/docs/checkout/sinatra) guide, this sample app shows you how to integrate Stripe tokenization feature with [Kill Bill subscriptions APIs](https://docs.killbill.io/latest/userguide_subscription.html).
 
+We also provide an [end-to-end tutorial](https://docs.killbill.io/latest/stripe_plugin.html) that explains how this application can be used with Kill Bill.
+
 Prerequisites
 -------------
 
-Ruby 2.1+ or JRuby 1.7.20+ is recommended. If you don’t have a Ruby installation yet, use [RVM](https://rvm.io/rvm/install):
+* Kill Bill is [already setup](https://docs.killbill.io/latest/getting_started.html)
+* The default tenant (bob/lazar) has been created
+* The default tenant has a `Sports` product, with a trial phase
+* The [Stripe plugin](https://github.com/killbill/killbill-stripe-plugin) is installed and configured
+
+Set up
+------
+
+Ruby 2.1+ or JRuby 1.7.20+ is recommended. If you do not have a Ruby installation yet, use [RVM](https://rvm.io/rvm/install) to install Ruby:
 
 ```
 gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 \curl -sSL https://get.rvm.io | bash -s stable --ruby
 ```
+
+Windows users may use [Ruby Installer](https://rubyinstaller.org/) to install Ruby.
 
 After following the post-installation instructions, you should have access to the ruby and gem executables.
 
@@ -22,13 +34,6 @@ gem install bundler
 bundle install
 ```
 
-This also assumes:
-
-* Kill Bill is [already setup](https://docs.killbill.io/latest/getting_started.html)
-* The default tenant (bob/lazar) has been created
-* The default tenant has a `Sports` product, with a trial phase
-* The [Stripe plugin](https://github.com/killbill/killbill-stripe-plugin) is installed and configured
-
 Run
 ---
 
@@ -38,13 +43,22 @@ To run the app:
 PUBLISHABLE_KEY=<YOUR_PUBLISHABLE_STRIPE_KEY> ruby app.rb
 ```
 
-or if you are using Docker:
+Docker Image
+---
+We also provide a Docker image for this demo application. To pull the image and run the demo application in a docker container, run the following commands:
 
 ```
-KB_URL='http://192.168.99.100:8080' PUBLISHABLE_KEY=<YOUR_PUBLISHABLE_STRIPE_KEY> ruby app.rb
+docker pull killbill/stripe-demo
 ```
 
-Then go to [http://localhost:4567/](http://localhost:4567/) where you should see both the Stripe Checkout button and the Stripe Elements button highlighting two integration methods.
+```
+docker run -e PUBLISHABLE_KEY=<YOUR_PUBLISHABLE_STRIPE_KEY> -e KB_URL=http://host.docker.internal:8080 -ti -p4567:4567 killbill/stripe-demo
+```
+
+Test 
+----
+
+Go to [http://localhost:4567/](http://localhost:4567/) where you should see both the Stripe Checkout button and the Stripe Elements button highlighting two integration methods.
 
 Enter dummy data (4242 4242 4242 4242 as the credit card number, any three digit CVC and any expiry date in the future work) and complete one of the two checkout processes.
 
