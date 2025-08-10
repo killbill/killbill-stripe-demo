@@ -139,7 +139,7 @@ __END__
   </html>
 
 @@index
-  <span class="image"><img src="https://drive.google.com/uc?&amp;id=0Bw8rymjWckBHT3dKd0U3a1RfcUE&amp;w=960&amp;h=480" alt="uc?&amp;id=0Bw8rymjWckBHT3dKd0U3a1RfcUE&amp;w=960&amp;h=480"></span>
+  <span class="image"><img src="/image.png" alt="image"></span>
   <form id="checkout" action="/checkout" method="post">
     <article>
       <label class="amount">
@@ -212,4 +212,3 @@ __END__
     <% end %>
   </ul>
   You can verify the payment at <a href="<%= "https://dashboard.stripe.com/test/payments/#{@authorization}" %>"><%= "https://dashboard.stripe.com/test/payments/#{@authorization}" %></a>.
-
